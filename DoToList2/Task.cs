@@ -18,6 +18,6 @@ public class Task
 
     public override string ToString()
     {
-        return $"{Descriere} - {(EsteFinalizat ? "Completed" : "In Asteptare")}";
+        return $"{Descriere} - {(EsteFinalizat ? "FINALIZAT" : "in ASTEPTARE")}";
     }
 }

@@ -27,11 +27,10 @@ public class Persoana
 
     public void AfiseazaToDoList()
     {
-        Console.WriteLine($"{Nume}'s To-Do List:");
-        foreach (var task in Taskuri)
+        Console.WriteLine($"\nTo-Do List pentru {Nume}:");
+        for (int i = 0; i < Taskuri.Count; i++)
         {
-            Console.WriteLine(task);
+            Console.WriteLine($"{i + 1}. {Taskuri[i]}");
         }
-        Console.WriteLine();
     }
 }
