@@ -1,23 +1,18 @@
-﻿using System;
+﻿
 
 public class Task
 {
     public string Descriere { get; set; }
-    public bool EsteFinalizat { get; set; }
+    public TaskStare Stare { get; set; }
 
     public Task(string descriere)
     {
         Descriere = descriere;
-        EsteFinalizat = false;
-    }
-
-    public void MarcheazaFinalizat()
-    {
-        EsteFinalizat = true;
+        Stare = TaskStare.InAsteptare;
     }
 
     public override string ToString()
     {
-        return $"{Descriere} - {(EsteFinalizat ? "FINALIZAT" : "in ASTEPTARE")}";
+        return $"{Descriere}, {Stare}";
     }
 }

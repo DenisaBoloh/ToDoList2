@@ -1,27 +1,85 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 public class AdministratorClienti
 {
+    private string numeFisier;
     private List<Persoana> persoane;
+    private AdministrarePersoane administrarePersoane;
+    private AdministrareTaskuri administrareTaskuri;
 
-    public AdministratorClienti()
+    public AdministratorClienti(string numeFisier)
     {
-        persoane = new List<Persoana>();
+        this.numeFisier = numeFisier;
+        this.persoane = new List<Persoana>();
+        this.administrarePersoane = new AdministrarePersoane();
+        this.administrareTaskuri = new AdministrareTaskuri(administrarePersoane);
+        CitesteDinFisier();
     }
 
     public void AdaugaPersoana(string nume)
     {
-        persoane.Add(new Persoana(nume));
+        administrarePersoane.AdaugaPersoana(nume);
+        ScrieInFisier();
     }
 
     public Persoana CautaPersoana(string nume)
     {
-        return persoane.Find(p => p.Nume == nume);
+        return administrarePersoane.CautaPersoana(nume);
     }
 
-    public List<Persoana> GetPersoane()
+    public void AdaugaTask(string numePersoana, string descriereTask)
     {
-        return persoane;
+        administrareTaskuri.AdaugaTask(numePersoana, descriereTask);
+        ScrieInFisier();
+    }
+
+    public void MarcheazaTaskCaFinalizat(string numePersoana, string descriereTask)
+    {
+        administrareTaskuri.MarcheazaTaskCaFinalizat(numePersoana, descriereTask);
+        ScrieInFisier();
+    }
+
+    public void AfiseazaTaskuri(string numePersoana)
+    {
+        administrareTaskuri.AfiseazaTaskuri(numePersoana);
+    }
+
+    private void ScrieInFisier()
+    {
+        using (StreamWriter sw = new StreamWriter(numeFisier))
+        {
+            foreach (var persoana in administrarePersoane.GetPersoane())
+            {
+                sw.WriteLine(persoana.ToString());
+            }
+        }
+    }
+
+    private void CitesteDinFisier()
+    {
+        if (File.Exists(numeFisier))
+        {
+            using (StreamReader sr = new StreamReader(numeFisier))
+            {
+                string linie;
+                while ((linie = sr.ReadLine()) != null)
+                {
+                    Console.WriteLine($"Calea fișierului: {Path.GetFullPath(numeFisier)}");
+
+                    var date = linie.Split('|');
+                    string numePersoana = date[0].Trim();
+                    Persoana persoana = new Persoana(numePersoana);
+
+                    string[] taskuri = date[1].Split(';');
+                    foreach (var task in taskuri)
+                    {
+                        persoana.AdaugaTask(task.Trim());
+                    }
+                    administrarePersoane.AdaugaPersoana(persoana.Nume);
+                }
+            }
+        }
     }
 }

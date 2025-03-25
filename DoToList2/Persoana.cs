@@ -4,33 +4,41 @@ using System.Collections.Generic;
 public class Persoana
 {
     public string Nume { get; set; }
-    public List<Task> Taskuri { get; set; }
+    private List<Task> taskuri;
 
     public Persoana(string nume)
     {
         Nume = nume;
-        Taskuri = new List<Task>();
+        taskuri = new List<Task>();
     }
 
-    public void AdaugaTask(string descriere)
+    public void AdaugaTask(string descriereTask)
     {
-        Taskuri.Add(new Task(descriere));
+        Task task = new Task(descriereTask);
+        taskuri.Add(task);
     }
 
-    public void MarcheazaTaskFinalizat(int index)
+    public void MarcheazaTaskFinalizat(string descriereTask)
     {
-        if (index >= 0 && index < Taskuri.Count)
+        Task task = taskuri.Find(t => t.Descriere.Equals(descriereTask, StringComparison.OrdinalIgnoreCase));
+        if (task != null)
         {
-            Taskuri[index].MarcheazaFinalizat();
+            task.Stare = TaskStare.Finalizat;
         }
     }
 
-    public void AfiseazaToDoList()
+    public void AfiseazaTaskuri()
     {
-        Console.WriteLine($"\nTo-Do List pentru {Nume}:");
-        for (int i = 0; i < Taskuri.Count; i++)
+        Console.WriteLine($"Taskuri pentru {Nume}:");
+        foreach (var task in taskuri)
         {
-            Console.WriteLine($"{i + 1}. {Taskuri[i]}");
+            Console.WriteLine($"{task.Descriere} - {task.Stare}");
         }
+    }
+
+    public override string ToString()
+    {
+        string taskuriString = string.Join(";", taskuri);
+        return $"{Nume} | {taskuriString}";
     }
 }
